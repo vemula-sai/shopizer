@@ -1,10 +1,11 @@
 pipeline {
-    agent { label 'NODE1'}
+    agent { label 'NODE1' }
+    parameters { string(name: 'Build_branch', defaultValue: 'dev', description: 'this is build branch') }
     stages {
         stage ('vcs') {
             steps {
-                git url: 'https://github.com/vemula-sai/shopizer.git',
-                branch: 'master'
+                git url: "https://github.com/vemula-sai/shopizer.git",
+                branch: "${params.Build_branch}"
             }
         }
         stage ('build') {
@@ -14,12 +15,12 @@ pipeline {
         }
         stage ('archiveartifacts') {
             steps {
-                archiveArtifacts archive: '**/target/*.jar'
+                archiveArtifacts artifacts: '**/target/*.jar'
             }
         }
         stage ('test results formatted') {
             steps {
-                junit: '**/surefire-reports/*.xml'
+                junit '**/surefire-reports/*.xml'
             }
         }
     }
